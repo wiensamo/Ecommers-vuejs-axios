@@ -2,8 +2,8 @@
   <v-col cols="9" class="mt-n3">
     <v-row>
       <v-col
-        cols="12"
-        sm="4"
+        cols="1"
+        sm="1"
         v-for="(clothe, i) in clothes"
         :key="i"
         :class="clothe.class"
@@ -12,13 +12,13 @@
           <v-card height="300" align="center" flat outlined tile>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="black" small dark>{{ poke.name }}</v-btn>
+              <v-btn color="black" small dark> algo {{}}</v-btn>
             </v-card-actions>
             <v-img :src="clothe.image" width="200" height="200" contain></v-img>
             <v-card-text class="mt-n4">
-              <strong :class="hover ? 'red--text' : 'black--text'">{{
-                poke.id
-              }}</strong>
+              <strong :class="hover ? 'red--text' : 'black--text'">
+                {{ titulo }}</strong
+              >
             </v-card-text>
             <v-expand-transition>
               <div
@@ -49,62 +49,40 @@
 import axios from "axios";
 
 export default {
+  components: {},
+
+  created() {
+    this.getItem(1988);
+  },
+
+  methods: {
+    async getItem(id) {
+      try {
+        let items = await axios.get(
+          `https://api.themoviedb.org/3/movie/${id}?`,
+          {
+            params: {
+              api_key: "27136529f26ada5e907f470f8a3a2e42",
+              language: "es-MX",
+            },
+          }
+        );
+        this.titulo = await items.data.title;
+        console.log(items.data.poster_path);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+
   data: () => ({
-    poke: {},
+    /**
+     */
     page: 1,
-    items: [
-      {
-        text: "Home",
-        disabled: false,
-        href: "breadcrumbs_home",
-      },
-      {
-        text: "Catalog",
-        disabled: false,
-        href: "breadcrumbs_catalog",
-      },
-      {
-        text: "Men",
-        disabled: false,
-        href: "breadcrumbs_men",
-      },
-      {
-        text: "Shoes",
-        disabled: false,
-        href: "breadcrumbs_shoes",
-      },
-    ],
-    styles: [
-      { title: "Lifestyle", count: "1" },
-      { title: "Running", count: "23" },
-      { title: "Training & Gym", count: "45" },
-      { title: "Basketball", count: "11" },
-      { title: "Football", count: "15" },
-      { title: "Soccer", count: "32" },
-      { title: "Baseball", count: "8" },
-      { title: "Golf", count: "15" },
-      { title: "Skateboarding", count: "22" },
-    ],
-    brands: [
-      { title: "Lifestyle", state: true },
-      { title: "Running", state: false },
-      { title: "Training & Gym", state: true },
-      { title: "Basketball", state: false },
-    ],
-    sizes: [
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-    ],
+    items: [],
+    titulo: null,
+    imgItem: "",
+
     clothes: [
       {
         class: "pa-0",
@@ -194,26 +172,6 @@ export default {
       },
     ],
   }),
-  pokes: [],
-  cantidadPokemons: 12,
-
-  created() {
-    this.getPoke();
-  },
-
-  methods: {
-    getPoke() {
-      axios
-        .get("https://pokeapi.co/api/v2/pokemon/65")
-        .then((res) => {
-          this.poke = res.data;
-          console.log(this.poke);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-  },
 };
 </script>
 
